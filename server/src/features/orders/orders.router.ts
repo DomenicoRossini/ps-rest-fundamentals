@@ -1,13 +1,24 @@
 import express from "express";
 
-import { getOrderDetail, getOrders } from "./orders.service";
+import { addOrderItems, getOrderDetail, getOrders } from "./orders.service";
 import { validate } from "../../middleware/validation.middleware";
-import { pagingRequestSchema } from "../types";
+import { orderItemsDTORequestSchema, pagingRequestSchema } from "../types";
 
 export const ordersRouter = express.Router();
 
+//45b23d49-7297-43da-b853-3c7f42c7da6a
+ordersRouter.post("/:id/items", validate(orderItemsDTORequestSchema),async(req,res) => {
+  const data = orderItemsDTORequestSchema.parse(req);
+  const newOrder = await addOrderItems(data.params.id,data.body);
+  if(newOrder!=null){
+    res.status(201).json(newOrder);
+  }else{
+    res.status(500).json({message: "PROBLEMISSIMI"});
+  }
+});
 
-ordersRouter.get("/", validate(pagingRequestSchema),async (req,res) => {
+
+ordersRouter.get("/", validate(pagingRequestSchema),async (req , res) => {
   const data = pagingRequestSchema.parse(req);
   const orders = await getOrders(data.query.skip,data.query.take);
   res.json(orders);
