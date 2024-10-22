@@ -1,11 +1,18 @@
 import express from "express";
 
 import { getOrderDetail, getOrders } from "./orders.service";
+import { validate } from "../../middleware/validation.middleware";
+import { pagingRequestSchema } from "../types";
 
 export const ordersRouter = express.Router();
 
 
-ordersRouter.get("/",async (req,res) => {
+ordersRouter.get("/", validate(pagingRequestSchema),async (req,res) => {
+  const data = pagingRequestSchema.parse(req);
+  const orders = await getOrders(data.query.skip,data.query.take);
+  res.json(orders);
+
+    /*
     const query = req.query;
     const take = query.take;
     const skip = query.skip;
@@ -17,6 +24,7 @@ ordersRouter.get("/",async (req,res) => {
     }else{
         res.json({message : "PROBLEMI PROBLEMI"})
     }
+    */
   });
   
   /*ordersRouter.get("/:id",async(req,res)=>{
