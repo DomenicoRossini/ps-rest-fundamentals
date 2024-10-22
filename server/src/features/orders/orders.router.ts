@@ -4,6 +4,7 @@ import { getOrderDetail, getOrders } from "./orders.service";
 
 export const ordersRouter = express.Router();
 
+
 ordersRouter.get("/",async (req,res) => {
     const query = req.query;
     const take = query.take;
