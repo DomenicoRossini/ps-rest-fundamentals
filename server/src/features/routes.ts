@@ -17,3 +17,7 @@ routes.use("/api", apiRouter);
 routes.get("/", (req, res) => {
   res.status(200).send("<h1>Server is ready!</h1>");
 });
+
+routes.get("/ciao/ciao", (req, res) => {
+  res.status(200).send("<h1>2xCIAO!</h1>");
+});
