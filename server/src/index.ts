@@ -18,7 +18,6 @@ app.use(express.json());
 // register routes
 app.use("/", routes);
 
-
 // register middleware
 app.use(express.static("public"));
 app.use(errorHandler);
