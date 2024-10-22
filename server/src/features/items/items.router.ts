@@ -1,7 +1,7 @@
 import express from "express";
-import { getItemDetail, getItems, upsertItem } from "./items.service";
+import { deleteItem, getItemDetail, getItems, upsertItem } from "./items.service";
 import { validate } from "../../middleware/validation.middleware";
-import { itemPOSTRequestSchema } from "../types";
+import { idNumberRequestSchema, itemPOSTRequestSchema } from "../types";
 
 export const itemsRouter = express.Router();
 
@@ -40,3 +40,13 @@ itemsRouter.post("/",validate(itemPOSTRequestSchema), async(req,res) => {
 function buildImageUrl(req: any, id: number): string {
   return `${req.protocol}://${req.get("host")}/images/${id}.jpg`;
 }
+
+itemsRouter.delete("/:id", validate(idNumberRequestSchema), async(req,res)=>{
+  const data = idNumberRequestSchema.parse(req);
+  const item = await deleteItem(data.params.id);
+  if(item!=null){
+    res.json(item);
+  }else{
+    res.status(404).json({message : "item not found"});
+  }
+})

@@ -1,8 +1,8 @@
 import express from "express";
 
-import { addOrderItems, getOrderDetail, getOrders } from "./orders.service";
+import { addOrderItems, deleteOrderItem, getOrderDetail, getOrders } from "./orders.service";
 import { validate } from "../../middleware/validation.middleware";
-import { orderItemsDTORequestSchema, pagingRequestSchema } from "../types";
+import { idItemIdUUIDRequestSchema, orderItemsDTORequestSchema, pagingRequestSchema } from "../types";
 
 export const ordersRouter = express.Router();
 
@@ -17,6 +17,15 @@ ordersRouter.post("/:id/items", validate(orderItemsDTORequestSchema),async(req,r
   }
 });
 
+ordersRouter.delete("/:id/items/:itemId", validate(idItemIdUUIDRequestSchema),async(req,res) => {
+  const data = idItemIdUUIDRequestSchema.parse(req);
+  const order = await deleteOrderItem(data.params.id,data.params.itemId);
+  if(order!=null){
+    res.json(order);
+  }else{
+    res.status(404).json({message : "Oredr or Item Not Found"});
+  }
+})
 
 ordersRouter.get("/", validate(pagingRequestSchema),async (req , res) => {
   const data = pagingRequestSchema.parse(req);
